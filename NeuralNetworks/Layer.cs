@@ -4,47 +4,33 @@ namespace NeuralNetworks
 {
     public class Layer
     {
-        private Vector input;
-        private Vector output;
+        public const double initialWeightAbsolute = 0.01;
 
-        public Layer()
+        public Layer(int outDim, int inDim)
         {
-            //TODO: Assign random values to Weights
+            Weights = Matrix.Factory.Random(outDim, inDim,
+                -initialWeightAbsolute, initialWeightAbsolute);
         }
 
-        public Vector Input => input;
+        public Vector Input { get; private set; }
 
-        public Vector Output => output;
+        public Vector Output { get; private set; }
 
         public Matrix Weights { get; set; }
 
         public Vector Feed(Vector rawInput)
         {
-            // Extend the rawInput by one 1 at the end
-            input = new Vector(rawInput.Dim + 1);
+            // Insert the rawInput vector into a zero vector: (v, ..., v, 0).
+            Input = Vector.Factory.FitIn(rawInput.Dim + 1, 0, rawInput);
 
-            for (int i = 0; i < input.Dim; i++)
-                input[i] = rawInput[i];
+            // Add the last basis vector to the input vector: (v, ..., v, 1).
+            Input += Vector.Factory.BasisVector(rawInput.Dim + 1, rawInput.Dim);
 
-            input[rawInput.Dim] = 1;
-            //////////////////////////////////////////
+            // Calculate the output vector by multiplicating with weights.
+            // We also have to apply the sigmoid function coordinatewise.
+            Output = (Weights * Input).Apply(MathHelper.Sigmoid);
 
-            // Calculate the output vector by multiplicating with weights
-            output = Weights * input;
-
-            return output;
+            return Output;
         }
-
-        public Vector CalcDelta(Layer next)
-        {
-
-        }
-
-        public Vector CalcDelta(Vector netOutput)
-        {
-
-        }
-
-
     }
 }
