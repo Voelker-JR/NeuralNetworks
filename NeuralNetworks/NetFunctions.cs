@@ -2,7 +2,7 @@
 
 namespace NeuralNetworks
 {
-    public static class MathHelper
+    public static class NetFunctions
     {
         public static double Sigmoid(double x)
         {

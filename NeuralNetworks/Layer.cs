@@ -8,7 +8,8 @@ namespace NeuralNetworks
 
         public Layer(int outDim, int inDim)
         {
-            Weights = Matrix.Factory.Random(outDim, inDim,
+            // Add one column for the bias values.
+            Weights = Matrix.Factory.Random(outDim, inDim + 1,
                 -initialWeightAbsolute, initialWeightAbsolute);
         }
 
@@ -28,7 +29,7 @@ namespace NeuralNetworks
 
             // Calculate the output vector by multiplicating with weights.
             // We also have to apply the sigmoid function coordinatewise.
-            Output = (Weights * Input).Apply(MathHelper.Sigmoid);
+            Output = (Weights * Input).Apply(NetFunctions.Sigmoid);
 
             return Output;
         }
