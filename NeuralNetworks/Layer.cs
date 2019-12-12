@@ -6,11 +6,15 @@ namespace NeuralNetworks
     {
         public const double initialWeightAbsolute = 0.01;
 
-        public Layer(int outDim, int inDim)
+        public Layer(int outDim, int inDim, AppliableFunction activation,
+            AppliableFunction activationDeriv)
         {
             // Add one column for the bias values.
             Weights = Matrix.Factory.Random(outDim, inDim + 1,
                 -initialWeightAbsolute, initialWeightAbsolute);
+
+            Activation = activation;
+            ActivationDeriv = activationDeriv;
         }
 
         public Vector Input { get; private set; }
@@ -18,6 +22,10 @@ namespace NeuralNetworks
         public Vector Output { get; private set; }
 
         public Matrix Weights { get; set; }
+
+        public AppliableFunction Activation { get; private set; }
+
+        public AppliableFunction ActivationDeriv { get; private set; }
 
         public Vector Feed(Vector rawInput)
         {
@@ -28,8 +36,8 @@ namespace NeuralNetworks
             Input += Vector.Factory.BasisVector(rawInput.Dim + 1, rawInput.Dim);
 
             // Calculate the output vector by multiplicating with weights.
-            // We also have to apply the sigmoid function coordinatewise.
-            Output = (Weights * Input).Apply(NetFunctions.Sigmoid);
+            // We also have to apply the activation function coordinatewise.
+            Output = (Weights * Input).Apply(Activation);
 
             return Output;
         }

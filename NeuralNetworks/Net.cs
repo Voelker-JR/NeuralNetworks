@@ -6,9 +6,10 @@ using VectorMath;
 
 namespace NeuralNetworks
 {
-    class Net
+    public class Net
     {
-        public Net(List<int> structure)
+        public Net(List<int> structure, AppliableFunction activation,
+            AppliableFunction activationDeriv)
         {
             Structure = new List<int>(structure);
 
@@ -20,11 +21,18 @@ namespace NeuralNetworks
 
                 Layers.Add(new Layer(outDim, inDim));
             }
+
+            Activation = activation;
+            ActivationDeriv = activationDeriv;
         }
 
         public List<int> Structure { get; private set; }
 
         public List<Layer> Layers { get; private set; }
+
+        public AppliableFunction Activation { get; private set; }
+
+        public AppliableFunction ActivationDeriv { get; private set; }
 
         public Vector Feed(Vector input)
         {
