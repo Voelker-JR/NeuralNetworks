@@ -4,28 +4,26 @@ namespace NeuralNetworks
 {
     public class Layer
     {
-        public const double initialWeightAbsolute = 0.01;
+        public const double initialWeightAbsolute = 1;
 
-        public Layer(int outDim, int inDim, AppliableFunction activation,
-            AppliableFunction activationDeriv)
+        public Layer(int outDim, int inDim, INetActivation activation)
         {
             // Add one column for the bias values.
             Weights = Matrix.Factory.Random(outDim, inDim + 1,
                 -initialWeightAbsolute, initialWeightAbsolute);
 
             Activation = activation;
-            ActivationDeriv = activationDeriv;
         }
 
         public Vector Input { get; private set; }
 
         public Vector Output { get; private set; }
 
+        public Vector PreOutput { get; private set; }
+
         public Matrix Weights { get; set; }
 
-        public AppliableFunction Activation { get; private set; }
-
-        public AppliableFunction ActivationDeriv { get; private set; }
+        public INetActivation Activation { get; }
 
         public Vector Feed(Vector rawInput)
         {
@@ -35,9 +33,11 @@ namespace NeuralNetworks
             // Add the last basis vector to the input vector: (v, ..., v, 1).
             Input += Vector.Factory.BasisVector(rawInput.Dim + 1, rawInput.Dim);
 
-            // Calculate the output vector by multiplicating with weights.
-            // We also have to apply the activation function coordinatewise.
-            Output = (Weights * Input).Apply(Activation);
+            // Calculate the pre-output vector by multiplicating with weights.
+            PreOutput = Weights * Input;
+
+            // Then we have to apply the activation function coordinatewise.
+            Output = PreOutput.Apply(Activation.Apply);
 
             return Output;
         }
