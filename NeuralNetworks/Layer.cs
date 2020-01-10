@@ -1,16 +1,22 @@
-﻿using VectorMath;
+﻿using System;
+using VectorMath;
 
 namespace NeuralNetworks
 {
     public class Layer
     {
-        public const double initialWeightAbsolute = 1;
-
         public Layer(int outDim, int inDim, INetActivation activation)
         {
-            // Add one column for the bias values.
-            Weights = Matrix.Factory.Random(outDim, inDim + 1,
-                -initialWeightAbsolute, initialWeightAbsolute);
+            Random random = new Random();
+
+            // Add one column for the bias values and initialize the
+            // weights based on the activation method.
+            Weights = new Matrix(outDim, inDim + 1)
+                .Apply(x => activation.WeightInitialization(random, outDim, inDim));
+
+            // Set the bias values all to 0.1
+            for (int i = 0; i < outDim; i++)
+                Weights[i, inDim] = 0.1;
 
             Activation = activation;
         }

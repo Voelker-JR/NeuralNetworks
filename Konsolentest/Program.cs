@@ -8,7 +8,7 @@ namespace Konsolentest
 {
     class Program
     {
-        static void Main(string[] args)
+        static void Main()
         {
             List<int> structure = new List<int>() { 2, 3, 2, 1 };
             Net net = new Net(structure, NetFunctions.Rectifier);
@@ -31,7 +31,7 @@ namespace Konsolentest
             for (int i = 0; i < 4; i++)
                 patterns.Add(new TrainingPattern(inputs[i], outputs[i]));
 
-            Training training = new RPROPTraining(net, 0.5, 1.2)
+            Training training = new AdamTraining(net, 2, 0.001)
             {
                 Patterns = patterns
             };
@@ -40,7 +40,7 @@ namespace Konsolentest
             CancellationToken token = source.Token;
 
             // Training
-            training.Run(300, token).Wait();
+            training.Run(5000, token).Wait();
 
             // Validation
             foreach (var input in inputs)

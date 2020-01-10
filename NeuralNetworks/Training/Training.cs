@@ -14,7 +14,7 @@ namespace NeuralNetworks
             // This list has to be filled in the extending classes
             LayerWrappers = new List<TrainingLayerWrapper>();
 
-            CurrentEpoch = 0;
+            CurrentEpoch = 1;
             MaxEpochs = 0;
         }
 
@@ -28,26 +28,10 @@ namespace NeuralNetworks
 
         public int MaxEpochs { get; private set; }
 
-        public void Run()
-        {
-            // Run through all patterns
-            foreach (var pattern in Patterns)
-            {
-                // Run through *this* pattern "priority" times
-                for (int i = 0; i < pattern.Priority; i++)
-                {
-                    Vector netOutput = AssociatedNet.Feed(pattern.Input);
-                    Backpropagation(netOutput, pattern.Output);
-                }
-            }
-
-            // Batch Training: Adjusting *after* running through all patterns.
-            foreach (var layerWrapper in LayerWrappers)
-            {
-                layerWrapper.CalcWeightChanges(); // Implements the specific algorithm
-                layerWrapper.ApplyWeightChanges();
-            }
-        }
+        /// <summary>
+        /// Implements batch, stochastic or mini-batch gradient descent.
+        /// </summary>
+        public abstract void Run();
 
         public Task Run(int epochs, CancellationToken ct)
         {
@@ -55,8 +39,8 @@ namespace NeuralNetworks
 
             return Task.Run(() =>
             {
-                for (CurrentEpoch = 0; 
-                    CurrentEpoch < MaxEpochs && !ct.IsCancellationRequested;
+                for (CurrentEpoch = 1; 
+                    CurrentEpoch <= MaxEpochs && !ct.IsCancellationRequested;
                     CurrentEpoch++)
                 {
                     // No other training must be running on this net.
@@ -68,7 +52,7 @@ namespace NeuralNetworks
             }, ct);
         }
 
-        private void Backpropagation(Vector netOutput, Vector patternOutput)
+        protected void Backpropagation(Vector netOutput, Vector patternOutput)
         {
             Vector delta = null;
             Matrix successorWeights = null;

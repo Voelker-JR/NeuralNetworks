@@ -1,10 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-
-namespace NeuralNetworks
+﻿namespace NeuralNetworks
 {
-    public class RPROPTraining : Training
+    public class RPROPTraining : BatchTraining
     {
         public RPROPTraining(Net net, double decreaseFactor, double increaseFactor)
             : base(net)

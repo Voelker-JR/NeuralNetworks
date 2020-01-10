@@ -20,8 +20,6 @@ namespace NeuralNetworks
 
         public abstract void ApplyBackpropChanges(Matrix changes);
 
-        public abstract void ApplyWeightChanges();
-
-        public abstract void CalcWeightChanges();
+        public abstract void ApplyWeightChanges(int epoch);
     }
 }

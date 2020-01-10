@@ -4,7 +4,7 @@ using System.Text;
 
 namespace NeuralNetworks
 {
-    public class StandardTraining : Training
+    public class StandardTraining : BatchTraining
     {
         public StandardTraining(Net net, double learningRate)
             : base(net)

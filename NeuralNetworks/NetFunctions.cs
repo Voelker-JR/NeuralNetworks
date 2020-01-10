@@ -14,6 +14,16 @@ namespace NeuralNetworks
         double Apply(double x);
 
         double ApplyDerivative(double x);
+
+        /// <summary>
+        /// Initialization function for the weight matrix of a layer.
+        /// The values are randomly generated.
+        /// </summary>
+        /// <param name="random">A Random object to generate the base values.</param>
+        /// <param name="outDim">The output dimension of this layer.</param>
+        /// <param name="inDim">The input dimension of this layer.</param>
+        /// <returns></returns>        
+        double WeightInitialization(Random random, int outDim, int inDim);
     }
 
     /*
@@ -39,6 +49,18 @@ namespace NeuralNetworks
         {
             return (x >= 0) ? 1 : 0;
         }
+
+        public double WeightInitialization(Random random, int outDim, int inDim)
+        {
+            // Generate gaussian random value based on Box-Muller transform
+            double x1 = 1.0 - random.NextDouble();
+            double x2 = 1.0 - random.NextDouble();
+
+            // Standard normal distributed evaluation [N(0, 1)]
+            double gaussian = Math.Sqrt(-2.0 * Math.Log(x1)) * Math.Cos(2.0 * Math.PI * x2);
+
+            return Math.Sqrt(2.0 / inDim) * gaussian;
+        }
     }
 
     public class IdentityActivation : INetActivation
@@ -57,6 +79,12 @@ namespace NeuralNetworks
         public double ApplyDerivative(double x)
         {
             return 1;
+        }
+
+        public double WeightInitialization(Random random, int outDim, int inDim)
+        {
+            // Uniform distribution on [-0.5, 0.5)
+            return random.NextDouble() - 0.5;
         }
     }
 
@@ -77,7 +105,86 @@ namespace NeuralNetworks
 
         public double ApplyDerivative(double y)
         {
-            return y * (1 - y);
+            return y * (1.0 - y);
+        }
+
+        public double WeightInitialization(Random random, int outDim, int inDim)
+        {
+            // Generate gaussian random value based on Box-Muller transform
+            double x1 = 1.0 - random.NextDouble();
+            double x2 = 1.0 - random.NextDouble();
+
+            // Standard normal distributed evaluation [N(0, 1)]
+            double gaussian = Math.Sqrt(-2.0 * Math.Log(x1)) * Math.Cos(2.0 * Math.PI * x2);
+
+            return Math.Sqrt(2.0 / (inDim + outDim)) * gaussian;
+        }
+    }
+
+    public class SoftplusActivation : INetActivation
+    {
+        private SoftplusActivation() { }
+
+        public static SoftplusActivation Instance { get; } = new SoftplusActivation();
+
+        public bool ApplyOnArgument => true;
+
+        public double Apply(double x)
+        {
+            return Math.Log(1.0 + Math.Exp(x));
+        }
+
+        public double ApplyDerivative(double x)
+        {
+            double e_x = Math.Exp(x);
+
+            return e_x / (1.0 + e_x);
+        }
+
+        public double WeightInitialization(Random random, int outDim, int inDim)
+        {
+            // Generate gaussian random value based on Box-Muller transform
+            double x1 = 1.0 - random.NextDouble();
+            double x2 = 1.0 - random.NextDouble();
+
+            // Standard normal distributed evaluation [N(0, 1)]
+            double gaussian = Math.Sqrt(-2.0 * Math.Log(x1)) * Math.Cos(2.0 * Math.PI * x2);
+
+            return Math.Sqrt(2.0 / (inDim + outDim)) * gaussian;
+        }
+    }
+
+    public class SELUActivation : INetActivation
+    {
+        private const double alpha = 1.6732632423543772848170;
+        private const double lambda = 1.0507009873554804934193;
+
+        private SELUActivation() { }
+
+        public static SELUActivation Instance { get; } = new SELUActivation();
+
+        public bool ApplyOnArgument => true;
+
+        public double Apply(double x)
+        {
+            return lambda * ((x > 0) ? x : alpha * Math.Exp(x) - alpha);
+        }
+
+        public double ApplyDerivative(double x)
+        {
+            return lambda * ((x > 0) ? 1 : alpha * Math.Exp(x));
+        }
+
+        public double WeightInitialization(Random random, int outDim, int inDim)
+        {
+            // Generate gaussian random value based on Box-Muller transform
+            double x1 = 1.0 - random.NextDouble();
+            double x2 = 1.0 - random.NextDouble();
+
+            // Standard normal distributed evaluation [N(0, 1)]
+            double gaussian = Math.Sqrt(-2.0 * Math.Log(x1)) * Math.Cos(2.0 * Math.PI * x2);
+
+            return Math.Sqrt(1.0 / inDim) * gaussian;
         }
     }
 
@@ -96,6 +203,12 @@ namespace NeuralNetworks
 
         public static readonly SigmoidActivation Sigmoid =
             SigmoidActivation.Instance;
+
+        public static readonly SoftplusActivation Softplus =
+            SoftplusActivation.Instance;
+
+        public static readonly SELUActivation SELU =
+            SELUActivation.Instance;
 
         public static double Sgn(double x)
         {

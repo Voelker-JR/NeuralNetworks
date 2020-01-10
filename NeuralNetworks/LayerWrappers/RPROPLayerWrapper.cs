@@ -9,17 +9,17 @@ namespace NeuralNetworks
         private const double maxWeightsDiff = 1;
         private const double minWeightsDiff = 1e-6;
 
+        private List<Matrix> gradients;
+
         public RPROPLayerWrapper(Layer layer,
             double decreaseFactor, double increaseFactor) : base(layer)
         {
-            Gradients = new List<Matrix>();
+            gradients = new List<Matrix>();
             PushGradient();
 
             DecreaseFactor = decreaseFactor;
             IncreaseFactor = increaseFactor;
         }
-
-        public List<Matrix> Gradients { get; set; }
 
         public double DecreaseFactor { get; }
 
@@ -30,22 +30,26 @@ namespace NeuralNetworks
             int rows = AssociatedLayer.Weights.Rows;
             int columns = AssociatedLayer.Weights.Columns;
 
-            Gradients.Insert(0, new Matrix(rows, columns));
+            gradients.Insert(0, new Matrix(rows, columns));
 
             // while: If there are more than 4 elements (somehow)
-            while (Gradients.Count > 3)
-                Gradients.RemoveAt(3);
+            while (gradients.Count > 3)
+                gradients.RemoveAt(3);
         }
 
         public override void ApplyBackpropChanges(Matrix changes)
         {
-            Gradients[0] += changes;
+            gradients[0] += changes;
         }
 
-        public override void ApplyWeightChanges()
+        public override void ApplyWeightChanges(int epoch)
         {
+            // Calculate
+            CalcWeightChanges();
+
+            // Apply on Weights
             AssociatedLayer.Weights +=
-                WeightsDiff ^ Gradients[0].Apply(NetFunctions.Sgn);
+                WeightsDiff ^ gradients[0].Apply(NetFunctions.Sgn);
 
             // Resetting gradient by pushing a zero matrix into the chain.
             PushGradient();
@@ -54,11 +58,11 @@ namespace NeuralNetworks
         /// <summary>
         /// Implements the RPROP-Algorithm.
         /// </summary>
-        public override void CalcWeightChanges()
+        private void CalcWeightChanges()
         {
-            if (Gradients.Count < 3)
+            if (gradients.Count < 3)
             {
-                WeightsDiff = Matrix.Factory.Fill(WeightsDiff.Rows, WeightsDiff.Columns, 0.1);
+                WeightsDiff = 0.001 * gradients[0];
                 return;
             }
 
@@ -66,8 +70,8 @@ namespace NeuralNetworks
             {
                 for (int j = 0; j < WeightsDiff.Columns; j++)
                 {
-                    double condition1 = Gradients[0][i, j] * Gradients[1][i, j];
-                    double condition2 = Gradients[1][i, j] * Gradients[2][i, j];
+                    double condition1 = gradients[0][i, j] * gradients[1][i, j];
+                    double condition2 = gradients[1][i, j] * gradients[2][i, j];
 
                     // Increase or decrease depending on the conditions above
                     if (condition1 > 0 && condition2 >= 0)

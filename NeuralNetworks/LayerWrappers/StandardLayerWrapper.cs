@@ -17,20 +17,15 @@ namespace NeuralNetworks
             WeightsDiff += changes;
         }
 
-        public override void ApplyWeightChanges()
+        public override void ApplyWeightChanges(int epoch)
         {
-            AssociatedLayer.Weights += WeightsDiff;
+            AssociatedLayer.Weights += LearningRate * WeightsDiff;
 
             // Reset the Matrix to zero
             int rows = WeightsDiff.Rows;
             int columns = WeightsDiff.Columns;
 
             WeightsDiff = new Matrix(rows, columns);
-        }
-
-        public override void CalcWeightChanges()
-        {
-            WeightsDiff *= LearningRate;
         }
     }
 }
