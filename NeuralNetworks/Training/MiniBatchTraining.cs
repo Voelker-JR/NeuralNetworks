@@ -6,7 +6,7 @@ namespace NeuralNetworks
 {
     public class MiniBatchTraining : Training
     {
-        public MiniBatchTraining(Net net, int batchSize) : base(net)
+        public MiniBatchTraining(Network net, int batchSize) : base(net)
         {
             BatchSize = batchSize;
         }

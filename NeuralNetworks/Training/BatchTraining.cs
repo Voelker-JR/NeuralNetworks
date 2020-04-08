@@ -4,7 +4,7 @@ namespace NeuralNetworks
 {
     public class BatchTraining : Training
     {
-        public BatchTraining(Net net) : base(net)
+        public BatchTraining(Network net) : base(net)
         { }
 
         public override void Run()

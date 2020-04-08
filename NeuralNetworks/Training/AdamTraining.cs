@@ -2,7 +2,7 @@
 {
     public class AdamTraining : MiniBatchTraining
     {
-        public AdamTraining(Net net, int batchSize, double learningRate)
+        public AdamTraining(Network net, int batchSize, double learningRate)
             : base(net, batchSize)
         {
             LearningRate = learningRate;

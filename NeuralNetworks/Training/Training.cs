@@ -7,7 +7,7 @@ namespace NeuralNetworks
 {
     public abstract class Training
     {
-        public Training(Net net)
+        public Training(Network net)
         {
             AssociatedNet = net;
 
@@ -19,7 +19,7 @@ namespace NeuralNetworks
             RegularizationRate = 0;
         }
 
-        public Net AssociatedNet { get; }
+        public Network AssociatedNet { get; }
 
         public List<TrainingLayerWrapper> LayerWrappers { get; }
 

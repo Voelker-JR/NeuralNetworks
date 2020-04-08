@@ -2,7 +2,7 @@
 {
     public class RPROPTraining : BatchTraining
     {
-        public RPROPTraining(Net net, double decreaseFactor, double increaseFactor)
+        public RPROPTraining(Network net, double decreaseFactor, double increaseFactor)
             : base(net)
         {
             DecreaseFactor = decreaseFactor;

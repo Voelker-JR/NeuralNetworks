@@ -6,7 +6,7 @@ namespace NeuralNetworks
 {
     public class StandardTraining : BatchTraining
     {
-        public StandardTraining(Net net, double learningRate)
+        public StandardTraining(Network net, double learningRate)
             : base(net)
         {
             LearningRate = learningRate;

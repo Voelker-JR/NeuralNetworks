@@ -6,7 +6,7 @@ namespace NeuralNetworks
 {
     public class RMSPropTraining : MiniBatchTraining
     {
-        public RMSPropTraining(Net net, int batchSize, double learningRate)
+        public RMSPropTraining(Network net, int batchSize, double learningRate)
             : base(net, batchSize)
         {
             LearningRate = learningRate;

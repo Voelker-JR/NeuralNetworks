@@ -11,7 +11,7 @@ namespace Konsolentest
         static void Main()
         {
             List<int> structure = new List<int>() { 2, 3, 2, 1 };
-            Net net = new Net(structure, NetFunctions.Rectifier);
+            Network net = new Network(structure, NetFunctions.Rectifier);
 
             List<Vector> inputs = new List<Vector>() {
                 new Vector(new double[] {0, 0}),
