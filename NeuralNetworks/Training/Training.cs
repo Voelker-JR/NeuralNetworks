@@ -16,6 +16,7 @@ namespace NeuralNetworks
 
             CurrentEpoch = 1;
             MaxEpochs = 0;
+            RegularizationRate = 0;
         }
 
         public Net AssociatedNet { get; }
@@ -24,9 +25,15 @@ namespace NeuralNetworks
 
         public List<TrainingPattern> Patterns { get; set; }
 
+        public List<TrainingPattern> ValidationPatterns { get; set; }
+
+        public double CurrentError { get; private set; }
+
         public int CurrentEpoch { get; private set; }
 
         public int MaxEpochs { get; private set; }
+
+        public double RegularizationRate { get; set; }
 
         /// <summary>
         /// Implements batch, stochastic or mini-batch gradient descent.
@@ -57,6 +64,9 @@ namespace NeuralNetworks
             Vector delta = null;
             Matrix successorWeights = null;
 
+            var outputDifference = patternOutput - netOutput;
+            CurrentError = outputDifference * outputDifference;
+
             // i is used for backwards iteration (see below)
             for (int i = 1; i <= LayerWrappers.Count; i++)
             {
@@ -74,7 +84,7 @@ namespace NeuralNetworks
                     activationDerivative = layer.Output.Apply(activation.ApplyDerivative);
 
                 if (i == 1)  // Apply the activation derivative componentwise on the error
-                    delta = (patternOutput - netOutput) ^ activationDerivative;
+                    delta = outputDifference ^ activationDerivative;
                 else
                 {
                     // Drop the last entry of the vector and adjust the delta vector
@@ -84,7 +94,7 @@ namespace NeuralNetworks
                 
                 // Now update the differences of the weights by passing the dyadic product of
                 // delta and the input vector of the layer to the LayerWrapper.
-                layerWrapper.ApplyBackpropChanges(delta | layer.Input);
+                layerWrapper.ApplyBackpropChanges((delta | layer.Input) - (RegularizationRate * layer.Weights));
 
                 // In order to get the weights of the successing layer, we have to save it here.
                 successorWeights = layer.Weights;

@@ -1,4 +1,5 @@
-﻿using System;
+﻿using NeuralNetworks.Statistics;
+using System;
 
 namespace NeuralNetworks
 {
@@ -52,14 +53,7 @@ namespace NeuralNetworks
 
         public double WeightInitialization(Random random, int outDim, int inDim)
         {
-            // Generate gaussian random value based on Box-Muller transform
-            double x1 = 1.0 - random.NextDouble();
-            double x2 = 1.0 - random.NextDouble();
-
-            // Standard normal distributed evaluation [N(0, 1)]
-            double gaussian = Math.Sqrt(-2.0 * Math.Log(x1)) * Math.Cos(2.0 * Math.PI * x2);
-
-            return Math.Sqrt(2.0 / inDim) * gaussian;
+            return StatHelper.NextGaussian(random, 0, Math.Sqrt(2.0 / inDim));
         }
     }
 
@@ -110,14 +104,7 @@ namespace NeuralNetworks
 
         public double WeightInitialization(Random random, int outDim, int inDim)
         {
-            // Generate gaussian random value based on Box-Muller transform
-            double x1 = 1.0 - random.NextDouble();
-            double x2 = 1.0 - random.NextDouble();
-
-            // Standard normal distributed evaluation [N(0, 1)]
-            double gaussian = Math.Sqrt(-2.0 * Math.Log(x1)) * Math.Cos(2.0 * Math.PI * x2);
-
-            return Math.Sqrt(2.0 / (inDim + outDim)) * gaussian;
+            return StatHelper.NextGaussian(random, 0, Math.Sqrt(2.0 / (inDim + outDim)));
         }
     }
 
@@ -143,14 +130,7 @@ namespace NeuralNetworks
 
         public double WeightInitialization(Random random, int outDim, int inDim)
         {
-            // Generate gaussian random value based on Box-Muller transform
-            double x1 = 1.0 - random.NextDouble();
-            double x2 = 1.0 - random.NextDouble();
-
-            // Standard normal distributed evaluation [N(0, 1)]
-            double gaussian = Math.Sqrt(-2.0 * Math.Log(x1)) * Math.Cos(2.0 * Math.PI * x2);
-
-            return Math.Sqrt(2.0 / (inDim + outDim)) * gaussian;
+            return StatHelper.NextGaussian(random, 0, Math.Sqrt(2.0 / (inDim + outDim)));
         }
     }
 
@@ -177,14 +157,7 @@ namespace NeuralNetworks
 
         public double WeightInitialization(Random random, int outDim, int inDim)
         {
-            // Generate gaussian random value based on Box-Muller transform
-            double x1 = 1.0 - random.NextDouble();
-            double x2 = 1.0 - random.NextDouble();
-
-            // Standard normal distributed evaluation [N(0, 1)]
-            double gaussian = Math.Sqrt(-2.0 * Math.Log(x1)) * Math.Cos(2.0 * Math.PI * x2);
-
-            return Math.Sqrt(1.0 / inDim) * gaussian;
+            return StatHelper.NextGaussian(random, 0, Math.Sqrt(1.0 / inDim));
         }
     }
 
