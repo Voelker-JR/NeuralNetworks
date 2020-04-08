@@ -34,6 +34,8 @@ namespace NeuralNetworks
 
         public void Reset()
         {
+            Layers.Clear();
+
             // Create Structure.Count - 1 layers (drop input layer).
             for (int i = 1; i < Structure.Count; i++)
             {
