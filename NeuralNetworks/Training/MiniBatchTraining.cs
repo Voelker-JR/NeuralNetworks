@@ -4,9 +4,9 @@ using VectorMath;
 
 namespace NeuralNetworks
 {
-    public class MiniBatchTraining : Training
+    public abstract class MiniBatchTraining : Training
     {
-        public MiniBatchTraining(Network net, int batchSize) : base(net)
+        public MiniBatchTraining(int batchSize)
         {
             BatchSize = batchSize;
         }
@@ -55,7 +55,7 @@ namespace NeuralNetworks
                 // Run through *this* pattern "priority" times
                 for (int i = 0; i < pattern.Priority; i++)
                 {
-                    Vector netOutput = AssociatedNet.Feed(pattern.Input);
+                    Vector netOutput = Network.Feed(pattern.Input);
                     Backpropagation(netOutput, pattern.Output);
                 }
             }

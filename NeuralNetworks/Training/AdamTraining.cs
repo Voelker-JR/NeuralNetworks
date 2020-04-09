@@ -1,16 +1,25 @@
-﻿namespace NeuralNetworks
+﻿using System.Collections.Generic;
+
+namespace NeuralNetworks
 {
     public class AdamTraining : MiniBatchTraining
     {
-        public AdamTraining(Network net, int batchSize, double learningRate)
-            : base(net, batchSize)
+        public AdamTraining(Network network, int batchSize, double learningRate)
+            : base(batchSize)
         {
             LearningRate = learningRate;
-
-            foreach (var layer in net.Layers)
-                LayerWrappers.Add(new AdamLayerWrapper(layer, learningRate));
+            ResetNetwork(network);
         }
 
         public double LearningRate { get; }
+
+        public override void ResetNetwork(Network network)
+        {
+            Network = network;
+            LayerWrappers = new List<TrainingLayerWrapper>();
+
+            foreach (var layer in network.Layers)
+                LayerWrappers.Add(new AdamLayerWrapper(layer, LearningRate));
+        }
     }
 }

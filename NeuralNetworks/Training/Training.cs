@@ -7,31 +7,26 @@ namespace NeuralNetworks
 {
     public abstract class Training
     {
-        public Training(Network net)
+        public Training()
         {
-            AssociatedNet = net;
-
-            // This list has to be filled in the extending classes
-            LayerWrappers = new List<TrainingLayerWrapper>();
-
             CurrentEpoch = 1;
             MaxEpochs = 0;
             RegularizationRate = 0;
         }
 
-        public Network AssociatedNet { get; }
+        public Network Network { get; protected set; }
 
-        public List<TrainingLayerWrapper> LayerWrappers { get; }
+        public List<TrainingLayerWrapper> LayerWrappers { get; protected set; }
 
         public List<TrainingPattern> Patterns { get; set; }
 
         public List<TrainingPattern> ValidationPatterns { get; set; }
 
-        public double CurrentError { get; private set; }
+        public double CurrentError { get; protected set; }
 
-        public int CurrentEpoch { get; private set; }
+        public int CurrentEpoch { get; protected set; }
 
-        public int MaxEpochs { get; private set; }
+        public int MaxEpochs { get; protected set; }
 
         public double RegularizationRate { get; set; }
 
@@ -39,6 +34,8 @@ namespace NeuralNetworks
         /// Implements batch, stochastic or mini-batch gradient descent.
         /// </summary>
         public abstract void Run();
+
+        public abstract void ResetNetwork(Network network);
 
         public Task Run(int epochs, CancellationToken ct)
         {
@@ -51,7 +48,7 @@ namespace NeuralNetworks
                     CurrentEpoch++)
                 {
                     // No other training must be running on this net.
-                    lock (AssociatedNet)
+                    lock (Network)
                     {
                         Run();
                     }

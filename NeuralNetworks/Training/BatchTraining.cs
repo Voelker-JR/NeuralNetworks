@@ -2,11 +2,8 @@
 
 namespace NeuralNetworks
 {
-    public class BatchTraining : Training
+    public abstract class BatchTraining : Training
     {
-        public BatchTraining(Network net) : base(net)
-        { }
-
         public override void Run()
         {
             // Run through all patterns
@@ -15,7 +12,7 @@ namespace NeuralNetworks
                 // Run through *this* pattern "priority" times
                 for (int i = 0; i < pattern.Priority; i++)
                 {
-                    Vector netOutput = AssociatedNet.Feed(pattern.Input);
+                    Vector netOutput = Network.Feed(pattern.Input);
                     Backpropagation(netOutput, pattern.Output);
                 }
             }
