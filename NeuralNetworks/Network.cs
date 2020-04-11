@@ -15,6 +15,24 @@ namespace NeuralNetworks
             Reset();
         }
 
+        // Copy constructor
+        public Network(Network original)
+        {
+            Structure = new List<int>(original.Structure);
+            Layers = new List<Layer>();
+            Activation = original.Activation;
+
+            foreach (var layer in original.Layers)
+            {
+                var copyLayer = new Layer(layer.Output.Dim, layer.Input.Dim, Activation)
+                {
+                    Weights = new Matrix(layer.Weights)
+                };
+
+                Layers.Add(copyLayer);
+            }
+        }
+
         public List<int> Structure { get; }
 
         public List<Layer> Layers { get; }

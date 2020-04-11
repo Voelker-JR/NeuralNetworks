@@ -20,10 +20,6 @@ namespace NeuralNetworks
 
         public List<TrainingPattern> Patterns { get; set; }
 
-        public List<TrainingPattern> ValidationPatterns { get; set; }
-
-        public double CurrentError { get; protected set; }
-
         public int CurrentEpoch { get; protected set; }
 
         public int MaxEpochs { get; protected set; }
@@ -61,9 +57,6 @@ namespace NeuralNetworks
             Vector delta = null;
             Matrix successorWeights = null;
 
-            var outputDifference = patternOutput - netOutput;
-            CurrentError = outputDifference * outputDifference;
-
             // i is used for backwards iteration (see below)
             for (int i = 1; i <= LayerWrappers.Count; i++)
             {
@@ -81,7 +74,7 @@ namespace NeuralNetworks
                     activationDerivative = layer.Output.Apply(activation.ApplyDerivative);
 
                 if (i == 1)  // Apply the activation derivative componentwise on the error
-                    delta = outputDifference ^ activationDerivative;
+                    delta = (patternOutput - netOutput) ^ activationDerivative;
                 else
                 {
                     // Drop the last entry of the vector and adjust the delta vector
